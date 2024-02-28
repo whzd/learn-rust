@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 words-count = "0.1.6"
+itertools = "0.8"

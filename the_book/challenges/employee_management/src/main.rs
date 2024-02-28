@@ -1,13 +1,15 @@
 use core::panic;
 use std::{collections::HashMap, io};
 
+use itertools::Itertools;
+
 fn main() {
-    println!("Company management!\n");
+    println!("Company management!");
 
     let mut company: HashMap<String, Vec<String>> = HashMap::new();
 
     loop {
-        println!("Select a option number.\n");
+        println!("\nSelect a option number:");
         println!("0. Exit");
         println!("1. Add employees to department.");
         println!("2. Get department employees");
@@ -50,7 +52,7 @@ fn main() {
 
 fn get_person_department() -> (String, String) {
     let entry: String = loop {
-        println!("Type the entry to add.");
+        println!("\nType the entry to add.");
 
         let mut entry = String::new();
         io::stdin()
@@ -64,6 +66,9 @@ fn get_person_department() -> (String, String) {
             && words.to_lowercase().contains("to")
         {
             break words;
+        } else {
+            println!("\nInvalid entry. Entry should match the following format:");
+            println!("Add <person> to <department>");
         }
     };
     let &[_, person, _, department] = entry.split_whitespace().collect::<Vec<_>>().as_slice()
@@ -75,7 +80,7 @@ fn get_person_department() -> (String, String) {
 
 fn get_department(company: &HashMap<String, Vec<String>>) -> String {
     let department: String = loop {
-        println!("Type and existing department name.");
+        println!("\nType and existing department name.");
 
         let mut entry = String::new();
         io::stdin()
@@ -91,12 +96,23 @@ fn get_department(company: &HashMap<String, Vec<String>>) -> String {
     department
 }
 
-// TODO: Improve print to show only the names of the employees in alphabetic order
 fn print_department(company: &HashMap<String, Vec<String>>, department: String) {
-    println!("{:?}\n", company.get(&department));
+    let mut employees = company.get(&department).unwrap().clone();
+    employees.sort();
+    println!("\nDepartment: {department}");
+    for employee in employees {
+        println!("{employee}")
+    }
 }
 
-// TODO: Improve print to show only the names of the employees in alphabetic order
 fn print_company(company: &HashMap<String, Vec<String>>) {
-    println!("{:?}\n", company)
+    println!("\nCompany Roster");
+    for key in company.keys().sorted() {
+        println!("\nDepartment: {key}");
+        let mut employees = company.get(key).unwrap().clone();
+        employees.sort();
+        for employee in employees {
+            println!("{employee}")
+        }
+    }
 }
